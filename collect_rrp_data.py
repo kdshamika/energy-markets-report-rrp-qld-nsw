@@ -10,6 +10,8 @@ This script carries out the following key steps:
 
 The data is obtained from the NEM website and prepared for further use in a Power BI dashboard.
 
+GitHub: https://github.com/kdshamika/energy-markets-report-rrp-qld-nsw
+
 """
 
 import urllib.request
@@ -22,17 +24,17 @@ import requests
 
 # 1. Fetch the latest 24-hour data from the specified link.
 
-base_url = "https://nemweb.com.au/Reports/Current/Public_Prices/"
-f = urllib.request.urlopen(base_url)
-file = f.read()
-# print(myfile)
-
 # recent 24hr date
 yesterday = (date.today()- timedelta(days=1))
 yesterday_str = yesterday.strftime('%Y%m%d')
 print(yesterday)
 
-# decode html ocntent
+base_url = "https://nemweb.com.au/Reports/Current/Public_Prices/"
+f = urllib.request.urlopen(base_url)
+file = f.read()
+# print(file)
+
+# decode html content, converting byte format content to string format
 html = file.decode('utf-8')
 # use regex to create file name
 pattern = r"PUBLIC_PRICES_" + yesterday_str + "\d{4}_\d{14}\.zip(?!\")"
@@ -40,6 +42,7 @@ filename = re.search(pattern, html).group()
 print(filename)
 print("---")
 
+#create exact url of the zip file
 url = base_url + filename
 print(url)
 print("---")
@@ -81,9 +84,3 @@ os.makedirs('processed_data', exist_ok=True)
 for s in states:
     df_= df.loc[df['REGIONID'] == s]
     df_.to_csv(f"processed_data/{s}.csv", sep=',', index=False)
-    
-
-
-
-
-
